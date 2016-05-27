@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/autocomplete_places"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="5dp"
+        android:hint="@string/autocomplete_hint"
+        android:imeOptions="actionDone"
+        android:paddingLeft="19dp"
+        android:inputType="textCapSentences"
+        android:paddingRight="19dp"
+        android:singleLine="true"
+        android:textSize="17sp" />
+
+    <ListView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/autocomplete_places"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:divider="@color/divider"
+        android:dividerHeight="1dp" />
+
+</RelativeLayout>
