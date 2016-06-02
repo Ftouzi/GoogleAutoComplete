@@ -15,14 +15,13 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Place;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -104,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 return false;
             }
         });
-        
+
         mAutoCompleteAdapter = new PlacesListViewAdapter(mGoogleApiClient, DEFAULT_BOUNDS, null, MainActivity.this);
         listView.setAdapter(mAutoCompleteAdapter);
 
@@ -133,6 +132,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 final PlaceAutocomplete item = mAutoCompleteAdapter.getItem(i);
                 final String placeId = String.valueOf(item.placeId);
 
+                itemClickAction(placeId);
+
                 Utils.hideKeyboard(MainActivity.this);
 
             }
@@ -148,4 +149,31 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     }
 
+    /**
+     * Handle item click and launch Geo Data API to get more informations about the selected address
+     *
+     * @param placeId
+     */
+    private void itemClickAction(final String placeId) {
+        PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
+                .getPlaceById(mGoogleApiClient, placeId);
+        placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
+            @Override
+            public void onResult(PlaceBuffer places) {
+
+                Log.d(TAG, "place count: " + places.getCount());
+                if (places.getCount() == 1) {
+                    Log.i(TAG, "place address: " + places.get(0).getAddress());
+                    Log.i(TAG, "place latLng: " + places.get(0).getLatLng());
+                    Log.i(TAG, "place latitude: " + places.get(0).getLatLng().latitude);
+                    Log.i(TAG, "place longitude: " + places.get(0).getLatLng().longitude);
+                    Log.i(TAG, "place name: " + places.get(0).getName());
+
+                } else {
+                    Log.i(TAG, "Get Places Detail Error");
+                }
+            }
+        });
+    }
 }
+
